@@ -1,0 +1,43 @@
+Create a Bucket
+===============
+From Services, create Bucket :
+give bucket name: mybucket
+do not Uncheck "Block all public access"
+Create bucket
+
+Now open the bucket by hyperlink:
+Create a folder there.
+Under folder update a html file by dragging from your local system.
+
+
+Now click on this file as hyper link and get its object url & throw in web browser , check page is not comin due to security issue (access denied)
+
+To give permission on bucket ,
+
+click on bucket -- permissions -- block public access -- edit -- uncheck the check box -- type confirm - confirm to save
+
+
+click on bucket -- permissions -- bucket policy
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::mybucket/*"
+            ]
+        }
+    ]
+}
+
+
+Now click on file and check.....
+Its working fine....
+
+

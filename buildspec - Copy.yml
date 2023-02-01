@@ -1,0 +1,28 @@
+# This file controls the AWS CodeBuild
+
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:
+    commands:
+      - echo "Entered the pre-build phase"
+      - $(aws ecr get-login  --no-include-email --region $AWS_REGION)
+  build:
+    commands:
+      - echo "Entered build phase"
+      - cd rest-service
+      - mvn compile
+      - mvn package
+      - echo " building docker image"
+      - docker build -t service/restapp .
+      - docker tag service/restapp $AWS_ACCOUNT_ID.dkr.ecr.$AWS_region.amazonaws.com/service-registry:restapp
+  post_build:
+    commands:
+    - echo "Entered the post-build phase"
+    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_region.amazonaws.com/service-registry:restapp
+    - printf '[{"name":"restapp-container" , "imageUri": "$s"}]' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_region.amazonaws.com/service-registry:restapp > taskdefinition.json
+artifacts:
+  files:
+    - rest-service/taskdefinition.json
